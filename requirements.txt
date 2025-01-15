@@ -1,0 +1,5 @@
+psutil
+crawl4ai
+pyperclip
+# crawl4ai-setup
+# playwright install
