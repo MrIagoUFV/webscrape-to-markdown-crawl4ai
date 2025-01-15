@@ -6,6 +6,7 @@ import requests
 from xml.etree import ElementTree
 from urllib.parse import urlparse
 import re
+import hashlib
 
 __location__ = os.path.dirname(os.path.abspath(__file__))
 __output__ = os.path.join(__location__, "output")
@@ -33,6 +34,10 @@ def save_to_markdown(url: str, content: str):
     else:
         # Remove caracteres inválidos e substitui / por _
         file_name = re.sub(r'[^\w\-_]', '_', file_name.replace('/', '_'))
+    
+    # Adiciona um hash curto da URL completa para garantir unicidade
+    url_hash = hashlib.md5(url.encode()).hexdigest()[:8]
+    file_name = f"{file_name}_{url_hash}"
     
     file_path = os.path.join(__docs__, f"{file_name}.md")
     
@@ -63,6 +68,10 @@ def create_readme(urls_processadas: List[tuple[str, bool]]):
                 file_name = 'index'
             else:
                 file_name = re.sub(r'[^\w\-_]', '_', file_name.replace('/', '_'))
+            
+            # Adiciona o mesmo hash usado no save_to_markdown
+            url_hash = hashlib.md5(url.encode()).hexdigest()[:8]
+            file_name = f"{file_name}_{url_hash}"
             
             if status:
                 sucesso.append((url, file_name))
